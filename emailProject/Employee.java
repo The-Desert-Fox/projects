@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package emailproject;
+package groupproject;
 
 /**
  *
@@ -33,7 +33,7 @@ class Employee {
     }
       
     // Employees in text file
-    public Employee(String name, int employeeID, String date, String emailAddress, int phone, String password)
+    public Employee(String name, String password, String date, String emailAddress, int phone, int employeeID)
     {
         this.name = name;
         this.employeeID = employeeID; 
@@ -104,7 +104,13 @@ class Employee {
 
     @Override
     public String toString() {
-        return "Employee{" + "name = " + name + ", employeeID = " + employeeID + ", date = " + date + ", emailAddress = " + emailAddress + ", phone = " + phone + '}';
+        return "+--------------------------------------------+" 
+                + "\nName: " + name 
+                + "\nEmployee ID: " + employeeID 
+                + "\nDate:  " + date 
+                + "\nEmail Address: " + emailAddress 
+                + "\nPhone: " + phone + 
+               "\n+--------------------------------------------+" ;
     }
     
     

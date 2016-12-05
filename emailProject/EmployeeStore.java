@@ -1,4 +1,4 @@
-package emailproject;
+package groupproject;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -6,7 +6,14 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+
+// ISSUES
+// Cannot load the employeeList arrayList from a .txt file
+// Email can be changed to another, preexisting email. ISSUE RESOLVED
+// InputMismatch still possiable. Need to ensure user input id of correct type.
 
 public class EmployeeStore {
     private ArrayList<Employee> employeeList = new ArrayList<>();
@@ -14,66 +21,69 @@ public class EmployeeStore {
     public void loadEmployeeList(Scanner file) throws FileNotFoundException
     {
         
-        while(file.hasNextLine())
+        while(file.hasNext())
         {      
             String name = file.next();
             System.out.print(name);
-            int employeeID = file.nextInt();
+            String password = file.next();
             String date = file.next();
             String emailAddress = file.next();
             int phone = file.nextInt();
-            String password = file.next();
-            employeeList.add( new Employee(name, employeeID, date, emailAddress, phone, password));
+            int employeeID = file.nextInt();  
+            employeeList.add( new Employee(name, password, date, emailAddress, phone, employeeID));        
             //employeeList.add( new Employee(name, date, emailAddress, phone));
         }
         
         file.close();
     }
     
+    // Default that will load information into the array
     public void loadEmployeeList()
     {
-        //employeeList.add( new Employee("John", 1, "010101", "simon", 1451451,"1345adg"));  
-        employeeList.add( new Employee("Paul", 2, "2572245", "Paul", 272541451,"msdmf332"));
-        employeeList.add( new Employee("Ringo", 3, "2572245", "Ringo", 272541451,"msdmf332"));
-        employeeList.add( new Employee("George", 4, "2572245", "George", 272541451,"msdmf332"));
-        employeeList.add( new Employee("Martin", 5, "2572245", "Martin", 272541451,"msdmf332"));
-        employeeList.add( new Employee("Paul", 6, "2572245", "Paul", 272541451,"msdmf332"));
+        employeeList.add( new Employee("John", "1345adg", "11-01-11", "simon", 1451451,1));  
+        employeeList.add( new Employee("Paul", "msdmf332", "12-12-14", "Paul", 272541451,2));
+        employeeList.add( new Employee("Ringo", "msdmf332", "16-05-03", "Ringo", 272541451,3));
+        employeeList.add( new Employee("George", "msdmf332", "16-05-03", "George", 272541451,4));
+        employeeList.add( new Employee("Martin", "msdmf332", "16-05-03", "Martin", 272541451,5));
+        employeeList.add( new Employee("Paul", "msdmf332", "16-05-03", "Paul", 272541451,6));
     }
     
     
     // Add an employee
     public void addEmployee()
     {
-        SimpleDateFormat d = new SimpleDateFormat("yyyy/MM/dd");
         Scanner sc = new Scanner(System.in);
-        System.out.println( "You want to add a new employee?" );
         
-        System.out.println( "Enter name: " );
-        String name = sc.next();
+        System.out.print( "Enter name: " );
+        String name = sc.nextLine();
         
-        System.out.println( "Enter Phone number: " );
-        int phone = sc.nextInt();
-        
-        System.out.println( "Generating unique employee ID..." );
         int employeeID = employeeIdGen();
         
-        System.out.println( "Getting date..." );
-        String date = "";
-        // Find out how to get the date
+        System.out.print( "Enter Phone number: " );
+        int phone = sc.nextInt();
         
-        System.out.println( "Enter Email Address: " );
-        String email = sc.next();
+        System.out.print( "Enter Date of Birth: " );
+        String date = sc.nextLine();
+        
+        System.out.print( "Enter Email Address: " );
+        String email = sc.nextLine();
         String checkedEmail = checkEmail(email);     
         
-        System.out.println( "Enter Password: " );
-        String password = sc.next();
+        System.out.print( "Enter Password: " );
+        String password = sc.nextLine();
         
-        System.out.println( "Enter Email Address: " );
-        employeeList.add( new Employee(name, employeeID, date, checkedEmail, phone, password));
+        employeeList.add( new Employee(name, password, date, checkedEmail, phone, employeeID));
         System.out.println( "You are now an employee." );
         System.out.println( "Your ID is " + employeeID );
         
         
+    }
+    
+    public void addEmployee(String name,int number, String dateOfBirth, String emailAddress, String password)
+    {
+        int employeeID = employeeIdGen();
+        String checkedEmail = checkEmail(emailAddress); 
+        employeeList.add( new Employee(name, password, dateOfBirth, checkedEmail, number, employeeID));
     }
     
     // Displays all details of employees
@@ -82,8 +92,8 @@ public class EmployeeStore {
             System.out.println( p );
     }
     
-    public void displayEmployeeList(ArrayList<Employee> e)
-    {
+    // Displays details of a given employee
+    public void displayEmployeeList(ArrayList<Employee> e){
         for( Employee p : e)
             System.out.println( p );
     }
@@ -102,7 +112,7 @@ public class EmployeeStore {
     }
     
     // Returns a specific empoloyee given a name
-    // If 2 employees have the same name both will be returned
+    // If more than 1 employees have the same name all will be returned
     public ArrayList<Employee> returnSpecificEmployee(String name)
     {
         ArrayList<Employee> employee = new ArrayList<Employee>() ;
@@ -119,7 +129,7 @@ public class EmployeeStore {
         return employee;
     }
     
-    //Returns an Employee object 
+    //Returns an Employee object given an email
     public Employee returnEmployeeEmail(String email)
     {
         Employee employee = new Employee();
@@ -145,7 +155,7 @@ public class EmployeeStore {
         
         while(end)
         {
-            id = r.nextInt(100009);
+            id = r.nextInt(100000);
             
             if(idChecker(id))
             {
@@ -156,7 +166,7 @@ public class EmployeeStore {
         return id;
     }
     
-    // Ensure the id is unique
+    // Ensure the randomly generated id is unique
     public boolean idChecker(int id)
     {
         boolean check = true;
@@ -164,7 +174,6 @@ public class EmployeeStore {
         for(int i = 0; i < employeeList.size(); i++)
         {
             Employee getEmployee = employeeList.get(i);
-            System.out.println("Pre-existing id: " + getEmployee.getEmployeeID());
             if(id == getEmployee.getEmployeeID())
             {
                 check = false;
@@ -206,8 +215,7 @@ public class EmployeeStore {
         for(int i = 0; i < employeeList.size(); i++)
         {
             Employee getEmployee = employeeList.get(i);
-            
-            if(email.equals(getEmployee.getEmployeeID()))
+            if(email.equals(getEmployee.getEmailAddress()))
             {
                 check = true;
             }

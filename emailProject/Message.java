@@ -5,6 +5,9 @@
  */
 package groupproject;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  *
  * @author Roshen
@@ -14,9 +17,7 @@ public class Message
     private String fromAddress;
     private String toAddress;
     private String subject;
-
-   
-    //private int date;
+    private ZonedDateTime date;
     private String priority;
     private String messageBody;
     private int messageID;
@@ -26,21 +27,24 @@ public class Message
         fromAddress = "";
         toAddress = "";
         subject = "";
+        date = null;
         priority = "";
         messageBody = "";
         messageID = 0; 
     }
-//CONSTRUCTORS 
-    public Message(String fromAddress, String toAddress, String subject, String priority, String messageBody, int messageID)
+
+    public Message(String fromAddress, String toAddress, String subject, String date, String priority, String messageBody, int messageID)
     {
         this.fromAddress = fromAddress;
         this.toAddress = toAddress;
         this.subject = subject;
+        ZonedDateTime timestamp = ZonedDateTime.parse(date);
+        this.date = timestamp;
         this.priority = priority;
         this.messageBody = messageBody;
         this.messageID = messageID;
-    }
-//GETTER METHODS
+    } 
+//GETTERS
     public String getFromAddress()
     {
         return fromAddress;
@@ -54,6 +58,18 @@ public class Message
     public String getSubject()
     {
         return subject;
+    }
+
+    public String getDate()
+    {
+        String strTimestamp
+                = DateTimeFormatter.RFC_1123_DATE_TIME.format(date);
+        return strTimestamp;
+    }
+    
+    public ZonedDateTime getDateObj()
+    {
+        return date;
     }
 
     public String getPriority()
@@ -70,9 +86,9 @@ public class Message
     {
         return messageID;
     }
+
     
-    
-// SETTER METHODS 
+    //SETTERS
     public void setFromAddress(String fromAddress)
     {
         this.fromAddress = fromAddress;
@@ -86,6 +102,12 @@ public class Message
     public void setSubject(String subject)
     {
         this.subject = subject;
+    }
+
+    public void setDate(String date)
+    {
+        ZonedDateTime timestamp = ZonedDateTime.parse(date);
+        this.date = timestamp;
     }
 
     public void setPriority(String priority)
@@ -102,8 +124,7 @@ public class Message
     {
         this.messageID = messageID;
     }
-    
-    
+
     @Override
     public String toString()
     {
@@ -111,6 +132,7 @@ public class Message
                 + "\nFrom: " + fromAddress 
                 + "\nTo: " + toAddress 
                 + "\nSubject: " + subject 
+                + "\nDate: " + date
                 + "\nPriority: " + priority 
                 + "\nMessageBody: " + messageBody 
                 + "\nMessageID: " + messageID +
